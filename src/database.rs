@@ -17,8 +17,9 @@ impl Database {
             master_password,
             passwords: vec![],
         };
-        database.save(database.name.clone() + &String::from(".ox"))
+        database.save(database.name.clone() + &String::from(".oxd"))
     }
+
     pub fn load(file_path: String) -> Result<Database, &'static str> {
         let raw_contents = match fs::read_to_string(file_path) {
             Ok(content) => content,
@@ -38,28 +39,27 @@ impl Database {
         fs::write(file_path, database_serialized)
     }
 
-    pub fn change_master_password() {
+    pub fn change_master_password(&self) {
 
     }
 
-    pub fn list_passwords() {
+    pub fn list_passwords(&self) {
 
     }
 
-    pub fn new_password(password: Command) {
+    pub fn new_password(&self, password: Command) {
 
     }
 
-    pub fn edit_password(cmd: Command) {
+    pub fn edit_password(&self, cmd: Command) {
 
     }
 
-    pub fn del_password(password_id: i32) {
+    pub fn del_password(&self, password_id: Command) {
 
     }
 
-    pub fn get_password(password_id: i32) {
+    pub fn get_password(&self, password_id: Command) {
 
     }
-
 }
