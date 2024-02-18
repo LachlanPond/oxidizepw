@@ -62,8 +62,14 @@ impl Config {
     ) -> Result<Config, &'static str> {
         args.next();
 
-        let database_name = match args.next() {
-            Some(arg) => arg,
+        let database_name = match args.next().as_deref() {
+            Some("new") => {
+                match args.next() {
+                    Some(name) => name,
+                    None => return Err("No database name was entered for the `new` command"),
+                }
+            },
+            Some(arg) => arg.to_string(),
             None => return Err("Didn't get a database file name"),
         };
 
@@ -113,14 +119,13 @@ impl Config {
         };
 
         Ok(Config {
-            database_name,
+            database_name: String::from(database_name),
             command,
         })
     }
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-
     Ok(())
 }
 
