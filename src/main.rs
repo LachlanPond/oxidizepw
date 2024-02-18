@@ -1,7 +1,7 @@
 use std::env;
 use std::process;
 
-use oxidizepw::Config;
+use oxidizepw::config::Config;
 
 fn main() {
     let config = Config::build(env::args()).unwrap_or_else(|err| {
