@@ -44,7 +44,15 @@ impl Database {
     }
 
     pub fn list_passwords(&self) {
-
+        let mut password_count = 0;
+        for password in &self.passwords {
+            println!("{id}. {name} - {user}",
+                id = password_count,
+                name = password.name,
+                user = password.username
+            );
+            password_count += 1;
+        }
     }
 
     pub fn new_password(&self, password: Command) {
