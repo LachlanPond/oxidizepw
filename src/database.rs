@@ -55,19 +55,40 @@ impl Database {
         }
     }
 
-    pub fn new_password(&self, password: Command) {
+    pub fn new_password(&mut self, cmd: Command) -> Result<(),&'static str> {
+        match cmd {
+            Command::New { name, user, pass } => {
+                let name = if name.is_none() {
+                    return Err("No name was supplied for the password, so the password was not made");
+                } else {
+                    name.unwrap()
+                };
 
+                let user = if user.is_none() { String::from("") } else { user.unwrap() };
+
+                let pass = if pass.is_none() { String::from("") } else { pass.unwrap() };
+
+                self.passwords.push(Password {
+                    name: name,
+                    username: user,
+                    password: pass,
+                });
+            },
+            _ => panic!("Expected `Command::New`, got a different Command variant"),
+        }
+
+        Ok(())
     }
 
     pub fn edit_password(&self, cmd: Command) {
 
     }
 
-    pub fn del_password(&self, password_id: Command) {
+    pub fn del_password(&self, cmd: Command) {
 
     }
 
-    pub fn get_password(&self, password_id: Command) {
+    pub fn get_password(&self, cmd: Command) {
 
     }
 }

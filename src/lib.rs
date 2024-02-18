@@ -21,7 +21,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
         config::Command::New { name, user, pass } => {
             Database::load(config.database_name)?
-                .new_password(Command::New { name, user, pass })
+                .new_password(Command::New { name, user, pass })?
         },
 
         config::Command::Edit { item, name, user, pass } => {
