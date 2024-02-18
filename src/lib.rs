@@ -49,6 +49,7 @@ pub enum Command {
     Edit {item: Option<i32>, name: Option<String>, user: Option<String>, pass: Option<String>},
     Delete(Option<i32>),
     Get(Option<i32>),
+    None
 }
 
 pub struct Config {
@@ -65,7 +66,9 @@ impl Config {
         let database_name = match args.next().as_deref() {
             Some("new") => {
                 match args.next() {
-                    Some(name) => name,
+                    Some(name) => {
+                        return Ok(Config { database_name: name, command: Command::None });
+                    },
                     None => return Err("No database name was entered for the `new` command"),
                 }
             },
