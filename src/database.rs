@@ -82,8 +82,25 @@ impl Database {
         }
     }
 
-    pub fn edit_password(&mut self, cmd: Command) -> Result<(), &'static str> {
-        todo!()
+    pub fn edit_password(&mut self, file_path: String, cmd: Command) -> Result<(), &'static str> {
+        match cmd {
+            Command::Edit { item, name, user, pass } => {
+                if item.is_none() {
+                    return Err("No id was supplied for the password, so no password was edited");
+                } else {
+                    let password = &mut self.passwords[item.unwrap()];
+                    if !name.is_none() { password.name = name.unwrap(); }
+                    if !user.is_none() { password.username = user.unwrap(); }
+                    if !pass.is_none() { password.password = pass.unwrap(); }
+                }
+            },
+            _ => panic!("Expected `Command::Delete`, got a different Command variant"),
+        }
+        
+        match self.save(file_path) {
+            Ok(_) => Ok(()),
+            Err(_) => return Err("Could not save database to file"),
+        }
     }
 
     pub fn del_password(&mut self, file_path: String, cmd: Command) -> Result<(), &'static str> {

@@ -15,6 +15,7 @@ use crate::config::Command;
 use crate::database::Database;
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+
     match config.command {
 
         config::Command::List => Database::load(&config.database_name)?.list_passwords()?,
@@ -26,7 +27,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
         config::Command::Edit { item, name, user, pass } => {
             Database::load(&config.database_name)?
-                .edit_password(Command::Edit { item, name, user, pass })?
+                .edit_password(config.database_name, Command::Edit { item, name, user, pass })?
         },
 
         config::Command::Delete(id) => Database::load(&config.database_name)?
