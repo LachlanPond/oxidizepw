@@ -33,8 +33,6 @@ impl Config {
             None => return Err("Didn't get a database file name"),
         };
 
-        println!("{}", database_name);
-
         // Sort command inputs into a Command enum
         let command = match args.next() {
             Some(arg) => match arg.as_str() {

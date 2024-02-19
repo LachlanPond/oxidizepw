@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, ops::Not};
 use serde::{Deserialize, Serialize};
 
 use crate::{password::Password, config::Command};
