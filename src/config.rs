@@ -3,9 +3,9 @@ use std::collections::HashMap;
 pub enum Command {
     List,
     New {name: Option<String>, user: Option<String>, pass: Option<String>},
-    Edit {item: Option<i32>, name: Option<String>, user: Option<String>, pass: Option<String>},
-    Delete(Option<i32>),
-    Get(Option<i32>),
+    Edit {item: Option<usize>, name: Option<String>, user: Option<String>, pass: Option<String>},
+    Delete(Option<usize>),
+    Get(Option<usize>),
     None
 }
 
@@ -33,13 +33,15 @@ impl Config {
             None => return Err("Didn't get a database file name"),
         };
 
+        println!("{}", database_name);
+
         // Sort command inputs into a Command enum
         let command = match args.next() {
             Some(arg) => match arg.as_str() {
                 "list" => Command::List,
                 "new" => Command::New { name: args.next(), user: args.next(), pass: args.next() },
                 "edit" => {
-                    let item = args.next().unwrap().parse::<i32>();
+                    let item = args.next().unwrap().parse::<usize>();
 
                     let mut edit_args = HashMap::new();
 
@@ -64,12 +66,12 @@ impl Config {
                     }
                 },
                 "delete" => {
-                    let item = args.next().unwrap().parse::<i32>();
+                    let item = args.next().unwrap().parse::<usize>();
 
                     Command::Delete(item.ok())
                 },
                 "get" => {
-                    let item = args.next().unwrap().parse::<i32>();
+                    let item = args.next().unwrap().parse::<usize>();
 
                     Command::Get(item.ok())
                 }

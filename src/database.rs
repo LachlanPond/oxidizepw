@@ -5,7 +5,6 @@ use crate::{password::Password, config::Command};
 
 #[derive(Serialize, Deserialize)]
 pub struct Database {
-    pub name: String,
     pub master_password: String,
     pub passwords: Vec<Password>,
 }
@@ -13,14 +12,13 @@ pub struct Database {
 impl Database {
     pub fn new(name: String, master_password: String) -> std::io::Result<()>{
         let database = Database {
-            name:name,
             master_password,
             passwords: vec![],
         };
-        database.save(database.name.clone() + &String::from(".oxd"))
+        database.save(name + &String::from(".oxd"))
     }
 
-    pub fn load(file_path: String) -> Result<Database, &'static str> {
+    pub fn load(file_path: &String) -> Result<Database, &'static str> {
         let raw_contents = match fs::read_to_string(file_path) {
             Ok(content) => content,
             Err(_) => return Err("Could not open database file"),
@@ -40,10 +38,10 @@ impl Database {
     }
 
     pub fn change_master_password(&self) {
-
+        todo!()
     }
 
-    pub fn list_passwords(&self) {
+    pub fn list_passwords(&self) -> Result<(), &'static str> {
         let mut password_count = 0;
         for password in &self.passwords {
             println!("{id}. {name} - {user}",
@@ -53,9 +51,10 @@ impl Database {
             );
             password_count += 1;
         }
+        Ok(())
     }
 
-    pub fn new_password(&mut self, cmd: Command) -> Result<(),&'static str> {
+    pub fn new_password(&mut self, file_path: String, cmd: Command) -> Result<(), &'static str> {
         match cmd {
             Command::New { name, user, pass } => {
                 let name = if name.is_none() {
@@ -77,18 +76,35 @@ impl Database {
             _ => panic!("Expected `Command::New`, got a different Command variant"),
         }
 
-        Ok(())
+        match self.save(file_path) {
+            Ok(_) => Ok(()),
+            Err(_) => return Err("Could not save database to file"),
+        }
     }
 
-    pub fn edit_password(&self, cmd: Command) {
-
+    pub fn edit_password(&mut self, cmd: Command) -> Result<(), &'static str> {
+        todo!()
     }
 
-    pub fn del_password(&self, cmd: Command) {
-
+    pub fn del_password(&mut self, file_path: String, cmd: Command) -> Result<(), &'static str> {
+        match cmd {
+            Command::Delete(id) => {
+                if id.is_none() {
+                    return Err("No id was supplied for the password, so no password was deleted");
+                } else {
+                    self.passwords.remove(id.unwrap());
+                }
+            },
+            _ => panic!("Expected `Command::Delete`, got a different Command variant"),
+        }
+        
+        match self.save(file_path) {
+            Ok(_) => Ok(()),
+            Err(_) => return Err("Could not save database to file"),
+        }
     }
 
-    pub fn get_password(&self, cmd: Command) {
-
+    pub fn get_password(&self, cmd: Command) -> Result<(), &'static str> {
+        todo!()
     }
 }

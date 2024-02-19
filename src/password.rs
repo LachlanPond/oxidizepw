@@ -9,6 +9,6 @@ pub struct Password {
 
 impl Password {
 	pub fn generate() {
-		// TODO
+		todo!()
 	}
 }
