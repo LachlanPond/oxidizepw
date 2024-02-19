@@ -41,7 +41,7 @@ impl Config {
                 "edit" => {
                     let item = args.next().unwrap().parse::<usize>();
 
-                    let mut edit_args = HashMap::new();
+                    let mut edit_args: HashMap<&str, Option<String>> = HashMap::new();
 
                     loop {
                         let arg = args.next();
@@ -58,9 +58,18 @@ impl Config {
 
                     Command::Edit { 
                         item: item.ok(), 
-                        name: edit_args.get("-n").unwrap().clone(), 
-                        user: edit_args.get("-u").unwrap().clone(), 
-                        pass: edit_args.get("-p").unwrap().clone() 
+                        name: match edit_args.get("-n") {
+                            Some(name) => name.clone(),
+                            None => None,
+                        },
+                        user: match edit_args.get("-u") {
+                            Some(user) => user.clone(),
+                            None => None,
+                        }, 
+                        pass: match edit_args.get("-p") {
+                            Some(pass) => pass.clone(),
+                            None => None,
+                        },
                     }
                 },
                 "delete" => {
