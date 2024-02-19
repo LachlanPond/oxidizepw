@@ -32,8 +32,15 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         config::Command::Delete(id) => Database::load(&config.database_name)?
                 .del_password(config.database_name, Command::Delete(id))?,
 
-        config::Command::Get(id) => Database::load(&config.database_name)?
-                .get_password(Command::Get(id))?,
+        config::Command::Get(id) => {
+            let database = Database::load(&config.database_name)?;
+            let password = database.get_password(Command::Get(id))?;
+            println!("Name: {name}\nUser:{user}\nPass: {pass}",
+                name=password.name,
+                user=password.username,
+                pass=password.password
+            )
+        }
 
         config::Command::None => {
             println!("Please enter the master password for the new database");

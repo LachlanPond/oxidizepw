@@ -104,7 +104,22 @@ impl Database {
         }
     }
 
-    pub fn get_password(&self, cmd: Command) -> Result<(), &'static str> {
-        todo!()
+    pub fn get_password(&self, cmd: Command) -> Result<&Password, &'static str> {
+        match cmd {
+            Command::Get(id) => {
+                if id.is_none() {
+                    return Err("No id was supplied for the password, so no password was fetched");
+                } else {
+                    Ok(&(self.passwords[id.unwrap()]))
+                }
+            },
+            _ => panic!("Expected `Command::Delete`, got a different Command variant"),
+        }
+    }
+
+    pub fn verify_master_password(&self, entered_password: String) -> Result<(), &'static str> {
+        // Basic implementation without cryptography
+        if entered_password != self.master_password { return Err("Incorrect master password") };
+        Ok(())
     }
 }
