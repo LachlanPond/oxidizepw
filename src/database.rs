@@ -1,4 +1,4 @@
-use std::{fs, ops::Not};
+use std::fs;
 use serde::{Deserialize, Serialize};
 
 use crate::{password::Password, config::Command};
@@ -134,9 +134,14 @@ impl Database {
         }
     }
 
-    pub fn verify_master_password(&self, entered_password: String) -> Result<(), &'static str> {
-        // Basic implementation without cryptography
-        if entered_password != self.master_password { return Err("Incorrect master password") };
-        Ok(())
+    pub fn verify_master_password(&self, entered_password: String) -> bool {
+        // Basic implementation without cryptography, returns bool for now but
+        // will become proper verification function
+        entered_password == *self.get_stored_master_password()
+    }
+
+    fn get_stored_master_password(&self) -> &String {
+        // TODO: Add decryption
+        &self.master_password
     }
 }
