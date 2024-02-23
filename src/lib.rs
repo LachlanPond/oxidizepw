@@ -42,7 +42,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     match config.command {
 
-        config::Command::List => database.list_passwords()?,
+        config::Command::List => database.list_passwords(&entered_password)?,
 
         config::Command::New { name, user, pass } => {
             database.new_password(config.database_name, entered_password, Command::New { name, user, pass })?

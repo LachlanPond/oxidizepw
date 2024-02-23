@@ -42,13 +42,14 @@ impl Database {
         todo!()
     }
 
-    pub fn list_passwords(&self) -> Result<(), &'static str> {
+    pub fn list_passwords(&self, decryption_key: &String) -> Result<(), MagicCryptError> {
         let mut password_count = 0;
         for password in &self.passwords {
+            let decrypted_password = password.decrypt(decryption_key)?;
             println!("{id}. {name} - {user}",
                 id = password_count,
-                name = password.name,
-                user = password.username
+                name = decrypted_password.name,
+                user = decrypted_password.username
             );
             password_count += 1;
         }
