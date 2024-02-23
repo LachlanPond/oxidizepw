@@ -35,7 +35,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     // Check the entered password against the stored master password
     let entered_password = rpassword::prompt_password("Please enter the database master password\n").unwrap();
-    if !database.verify_master_password(entered_password) {
+    if !database.verify_master_password(&entered_password) {
         println!("The password you entered was incorrect");
         return Ok(())
     }

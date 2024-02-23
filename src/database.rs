@@ -136,10 +136,10 @@ impl Database {
         }
     }
 
-    pub fn verify_master_password(&self, entered_password: String) -> bool {
+    pub fn verify_master_password(&self, entered_password: &String) -> bool {
         // Basic implementation without cryptography, returns bool for now but
         // will become proper verification function
-        entered_password == *self.get_stored_master_password()
+        *entered_password == *self.get_stored_master_password()
     }
 
     fn get_stored_master_password(&self) -> &String {
