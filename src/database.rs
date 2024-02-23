@@ -1,4 +1,5 @@
 use std::fs;
+use magic_crypt::MagicCryptError;
 use serde::{Deserialize, Serialize};
 
 use crate::{password::Password, config::Command};
@@ -54,7 +55,8 @@ impl Database {
         Ok(())
     }
 
-    pub fn new_password(&mut self, file_path: String, cmd: Command) -> Result<(), &'static str> {
+    // For any new information, the aim is to immediately encrypt and store it
+    pub fn new_password(&mut self, file_path: String, encryption_key: String, cmd: Command) -> Result<(), &'static str> {
         match cmd {
             Command::New { name, user, pass } => {
                 let name = if name.is_none() {
@@ -63,15 +65,15 @@ impl Database {
                     name.unwrap()
                 };
 
-                let user = if user.is_none() { String::from("") } else { user.unwrap() };
+                let username = if user.is_none() { String::from("") } else { user.unwrap() };
 
-                let pass = if pass.is_none() { String::from("") } else { pass.unwrap() };
+                let password = if pass.is_none() { String::from("") } else { pass.unwrap() };
 
                 self.passwords.push(Password {
-                    name: name,
-                    username: user,
-                    password: pass,
-                });
+                    name,
+                    username,
+                    password,
+                }.encrypt(encryption_key));
             },
             _ => panic!("Expected `Command::New`, got a different Command variant"),
         }
