@@ -14,8 +14,6 @@ use crate::config::Config;
 use crate::config::Command;
 use crate::database::Database;
 
-const FIVE_MINUTES: i32 = 300;
-
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     match config.command {
