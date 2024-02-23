@@ -91,16 +91,18 @@ impl Database {
         }
     }
 
-    pub fn edit_password(&mut self, file_path: String, cmd: Command) -> Result<(), &'static str> {
+    pub fn edit_password(&mut self, file_path: String, encryption_key: String, cmd: Command) -> Result<(), &'static str> {
         match cmd {
             Command::Edit { item, name, user, pass } => {
                 if item.is_none() {
                     return Err("No id was supplied for the password, so no password was edited");
                 } else {
-                    let password = &mut self.passwords[item.unwrap()];
-                    if !name.is_none() { password.name = name.unwrap(); }
-                    if !user.is_none() { password.username = user.unwrap(); }
-                    if !pass.is_none() { password.password = pass.unwrap(); }
+                    let encrypted_password = &self.passwords[item.unwrap()];
+                    let mut decrypted_password = encrypted_password.decrypt(&encryption_key).unwrap();
+                    if !name.is_none() { decrypted_password.name = name.unwrap(); }
+                    if !user.is_none() { decrypted_password.username = user.unwrap(); }
+                    if !pass.is_none() { decrypted_password.password = pass.unwrap(); }
+                    self.passwords[item.unwrap()] = decrypted_password.encrypt(encryption_key);
                 }
             },
             _ => panic!("Expected `Command::Delete`, got a different Command variant"),

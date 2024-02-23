@@ -43,7 +43,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         },
 
         config::Command::Edit { item, name, user, pass } => {
-            database.edit_password(config.database_name, Command::Edit { item, name, user, pass })?
+            database.edit_password(config.database_name, entered_password, Command::Edit { item, name, user, pass })?
         },
 
         config::Command::Delete(id) => database.del_password(config.database_name, Command::Delete(id))?,
