@@ -1,21 +1,27 @@
 use std::fs;
 use magic_crypt::MagicCryptError;
 use serde::{Deserialize, Serialize};
+use sha2::{Sha256, Digest};
 
 use crate::{password::Password, config::Command};
 
 #[derive(Serialize, Deserialize)]
 pub struct Database {
-    pub master_password: String,
+    pub master_password: Vec<u8>,
     pub passwords: Vec<Password>,
 }
 
 impl Database {
     pub fn new(name: String, master_password: String) -> std::io::Result<()>{
+        let mut hasher = Sha256::new();
+        hasher.update(master_password.as_bytes());
+        let master_password_hashed = hasher.finalize();
+
         let database = Database {
-            master_password,
+            master_password: master_password_hashed.to_vec(),
             passwords: vec![],
         };
+
         database.save(name + &String::from(".oxd"))
     }
 
@@ -138,13 +144,11 @@ impl Database {
     }
 
     pub fn verify_master_password(&self, entered_password: &String) -> bool {
-        // Basic implementation without cryptography, returns bool for now but
-        // will become proper verification function
-        *entered_password == *self.get_stored_master_password()
+        let mut hasher = Sha256::new();
+        hasher.update(entered_password.as_bytes());
+        let entered_password_hashed = hasher.finalize().to_vec();
+
+        entered_password_hashed == self.master_password
     }
 
-    fn get_stored_master_password(&self) -> &String {
-        // TODO: Add decryption
-        &self.master_password
-    }
 }

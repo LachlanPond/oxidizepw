@@ -24,8 +24,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         _ => ()
     }
 
-    // TODO: Update the database to encrypt the passwords and master password.
-    // Everything is currently in plain text!
+    // Database is encrypted at this point
     let mut database = Database::load(&config.database_name)?;
 
     // Check the entered password against the stored master password
