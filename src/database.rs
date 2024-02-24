@@ -132,13 +132,16 @@ impl Database {
         }
     }
 
-    pub fn get_password(&self, cmd: Command) -> Result<&Password, &'static str> {
+    pub fn get_password(&self, decryption_key: &String, cmd: Command) -> Result<Password, &'static str> {
         match cmd {
             Command::Get(id) => {
                 if id.is_none() {
                     return Err("No id was supplied for the password, so no password was fetched");
                 } else {
-                    Ok(&(self.passwords[id.unwrap()]))
+                    match self.passwords[id.unwrap()].decrypt(decryption_key) {
+                        Ok(pass) => Ok(pass),
+                        Err(_) => return Err("Could not decrypt password"),
+                    }
                 }
             },
             _ => panic!("Expected `Command::Delete`, got a different Command variant"),

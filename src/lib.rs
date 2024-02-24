@@ -49,12 +49,12 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         config::Command::Delete(id) => database.del_password(config.database_name, Command::Delete(id))?,
 
         config::Command::Get(id) => {
-            let password = database.get_password(Command::Get(id))?;
-            println!("Name: {name}\nUser:{user}\nPass: {pass}",
+            let password = database.get_password(&entered_password, Command::Get(id))?;
+            println!("Name: {name}\nUser: {user}\nPass: {pass}",
                 name=password.name,
                 user=password.username,
                 pass=password.password
-            )
+            );
         },
 
         _ => ()
