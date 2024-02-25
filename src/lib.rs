@@ -57,6 +57,11 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
             );
         },
 
+        config::Command::ChangeMaster(new_password) => {
+            database.change_master_password(config.database_name, &entered_password, Command::ChangeMaster(new_password))?;
+            println!("Database master password has been updated");
+        },
+
         _ => ()
     };
 

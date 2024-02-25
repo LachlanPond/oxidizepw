@@ -6,6 +6,7 @@ pub enum Command {
     Edit {item: Option<usize>, name: Option<String>, user: Option<String>, pass: Option<String>},
     Delete(Option<usize>),
     Get(Option<usize>),
+    ChangeMaster(Option<String>),
     None
 }
 
@@ -81,6 +82,11 @@ impl Config {
                     let item = args.next().unwrap().parse::<usize>();
 
                     Command::Get(item.ok())
+                },
+                "updatepass" => {
+                    let new_pass = args.next();
+
+                    Command::ChangeMaster(new_pass)
                 }
                 _ => return Err("Command option does not exist"),
             },

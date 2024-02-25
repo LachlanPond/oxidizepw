@@ -44,8 +44,32 @@ impl Database {
         fs::write(file_path, database_serialized)
     }
 
-    pub fn change_master_password(&self) {
-        todo!()
+    pub fn change_master_password(mut self, file_path: String, old_password: &String, cmd: Command) -> Result<(), &'static str> {
+        match cmd {
+            Command::ChangeMaster(new_password) => {
+                let new_password = if new_password.is_none() {
+                    return Err("No new password was supplied for the master password");
+                } else {
+                    new_password.unwrap()
+                };
+                let mut hasher = Sha256::new();
+                hasher.update(new_password.as_bytes());
+                let master_password_hashed = hasher.finalize().to_vec();
+
+                self.master_password = master_password_hashed;
+
+                self.passwords = self.passwords
+                                    .into_iter()
+                                    .map(|password| password
+                                        .update_encryption_key(old_password, &new_password).unwrap()).collect::<Vec<Password>>();
+            },
+            _ => panic!("Expected `Command::ChangeMaster, got a different Command variant"),
+        }
+
+        match self.save(file_path) {
+            Ok(_) => Ok(()),
+            Err(_) => return Err("Could not save database to file"),
+        }
     }
 
     pub fn list_passwords(&self, decryption_key: &String) -> Result<(), MagicCryptError> {

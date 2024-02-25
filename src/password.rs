@@ -26,4 +26,9 @@ impl Password {
 		    password: mc.decrypt_base64_to_string(&self.password)?,
 		})
 	}
+
+	pub fn update_encryption_key(&self, current_key: &String, new_key: &String) -> Result<Password, MagicCryptError> {
+		let decrypted_password = self.decrypt(&current_key)?;
+		Ok(decrypted_password.encrypt(new_key.to_string()))
+	}
 }
