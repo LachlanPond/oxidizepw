@@ -7,6 +7,7 @@ pub enum Command {
     Delete(Option<usize>),
     Get(Option<usize>),
     ChangeMaster(Option<String>),
+    Help,
     None
 }
 
@@ -21,6 +22,8 @@ impl Config {
     ) -> Result<Config, &'static str> {
         args.next();
 
+        // For operations on a database file, the next arg will be the database name,
+        // otherwise handle the command and return with an appropriate config early
         let database_name = match args.next().as_deref() {
             Some("new") => {
                 match args.next() {
@@ -30,8 +33,11 @@ impl Config {
                     None => return Err("No database name was entered for the `new` command"),
                 }
             },
+            Some("help") | Some("-h") => {
+                return Ok(Config { database_name: String::from(""), command: Command::Help});
+            },
             Some(arg) => arg.to_string(),
-            None => return Err("Didn't get a database file name"),
+            None => return Err("No command options entered"),
         };
 
         // Sort command inputs into a Command enum
