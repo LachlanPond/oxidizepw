@@ -1,5 +1,6 @@
 use magic_crypt::{new_magic_crypt, MagicCryptError, MagicCryptTrait};
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 
 #[derive(Serialize, Deserialize)]
 pub struct Password {
@@ -18,7 +19,7 @@ impl Password {
 		}
 	}
 
-	pub fn decrypt(&self, decryption_key: &String) -> Result<Password, MagicCryptError>{
+	pub fn decrypt(&self, decryption_key: &String) -> Result<Password, PasswordError>{
 		let mc = new_magic_crypt!(decryption_key, 256);
 		Ok(Password {
 		    name: mc.decrypt_base64_to_string(&self.name)?,
@@ -27,8 +28,14 @@ impl Password {
 		})
 	}
 
-	pub fn update_encryption_key(&self, current_key: &String, new_key: &String) -> Result<Password, MagicCryptError> {
+	pub fn update_encryption_key(&self, current_key: &String, new_key: &String) -> Result<Password, PasswordError> {
 		let decrypted_password = self.decrypt(&current_key)?;
 		Ok(decrypted_password.encrypt(new_key.to_string()))
 	}
+}
+
+#[derive(Error, Debug)]
+pub enum PasswordError {
+    #[error("failed to decrypt password")]
+    DecryptionFailure(#[from] MagicCryptError),
 }

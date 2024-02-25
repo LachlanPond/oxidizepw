@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use thiserror::Error;
 
 pub enum Command {
     List,
@@ -19,7 +20,7 @@ pub struct Config {
 impl Config {
     pub fn build(
         mut args: impl Iterator<Item = String>,
-    ) -> Result<Config, &'static str> {
+    ) -> Result<Config, ConfigError> {
         args.next();
 
         // For operations on a database file, the next arg will be the database name,
@@ -30,14 +31,14 @@ impl Config {
                     Some(name) => {
                         return Ok(Config { database_name: name, command: Command::None });
                     },
-                    None => return Err("No database name was entered for the `new` command"),
+                    None => return Err(ConfigError::CommandError("No database name was entered for the `new` command".to_string())),
                 }
             },
             Some("help") | Some("-h") => {
                 return Ok(Config { database_name: String::from(""), command: Command::Help});
             },
             Some(arg) => arg.to_string(),
-            None => return Err("No command options entered"),
+            None => return Err(ConfigError::CommandError("No command options entered".to_string())),
         };
 
         // Sort command inputs into a Command enum
@@ -94,9 +95,9 @@ impl Config {
 
                     Command::ChangeMaster(new_pass)
                 }
-                _ => return Err("Command option does not exist"),
+                _ => return Err(ConfigError::CommandError("Command option does not exist".to_string())),
             },
-            None => return Err("Didn't get a command"),
+            None => return Err(ConfigError::CommandError("Didn't get a command".to_string())),
         };
 
         Ok(Config {
@@ -104,4 +105,10 @@ impl Config {
             command,
         })
     }
+}
+
+#[derive(Error, Debug)]
+pub enum ConfigError {
+    #[error("`{0}`")]
+    CommandError(String),
 }

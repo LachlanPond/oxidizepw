@@ -120,8 +120,3 @@ Simple commandline password manager with basic SHA2 master password hashing and 
         new_master_pass: The new master password for the database";
     println!("{}", help_string);
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-}
