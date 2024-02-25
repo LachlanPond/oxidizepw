@@ -117,7 +117,11 @@ impl Database {
                 if item.is_none() {
                     return Err(DatabaseError::CommandError("No id was supplied for the password, so no password was edited".to_string()));
                 } else {
-                    let encrypted_password = &self.passwords[item.unwrap()];
+                    let password_id = item.unwrap();
+                    if password_id >= self.passwords.len() {
+                        return Err(DatabaseError::CommandError(format!("The id supplied does not exist in the database, valid id's are 0-{}",self.passwords.len()-1)));
+                    }
+                    let encrypted_password = &self.passwords[password_id];
                     let mut decrypted_password = encrypted_password.decrypt(&encryption_key).unwrap();
                     if !name.is_none() { decrypted_password.name = name.unwrap(); }
                     if !user.is_none() { decrypted_password.username = user.unwrap(); }
@@ -138,7 +142,11 @@ impl Database {
                 if id.is_none() {
                     return Err(DatabaseError::CommandError("No id was supplied for the password, so no password was deleted".to_string()));
                 } else {
-                    self.passwords.remove(id.unwrap());
+                    let password_id = id.unwrap();
+                    if password_id >= self.passwords.len() {
+                        return Err(DatabaseError::CommandError(format!("The id supplied does not exist in the database, valid id's are 0-{}",self.passwords.len()-1)));
+                    }
+                    self.passwords.remove(password_id);
                 }
             },
             _ => panic!("Expected `Command::Delete`, got a different Command variant"),
@@ -154,7 +162,11 @@ impl Database {
                 if id.is_none() {
                     return Err(DatabaseError::CommandError("No id was supplied for the password, so no password was fetched".to_string()));
                 } else {
-                    Ok(self.passwords[id.unwrap()].decrypt(decryption_key)?)
+                    let password_id = id.unwrap();
+                    if password_id >= self.passwords.len() {
+                        return Err(DatabaseError::CommandError(format!("The id supplied does not exist in the database, valid id's are 0-{}",self.passwords.len()-1)));
+                    }
+                    Ok(self.passwords[password_id].decrypt(decryption_key)?)
                 }
             },
             _ => panic!("Expected `Command::Delete`, got a different Command variant"),
