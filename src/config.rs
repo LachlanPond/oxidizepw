@@ -34,7 +34,7 @@ impl Config {
                     None => return Err(ConfigError::CommandError("No database name was entered for the `new` command".to_string())),
                 }
             },
-            Some("help") | Some("-h") => {
+            Some("help") | Some("-h") | Some("--help") => {
                 return Ok(Config { database_name: String::from(""), command: Command::Help});
             },
             Some(arg) => arg.to_string(),
