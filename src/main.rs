@@ -10,7 +10,7 @@ fn main() {
     });
 
     if let Err(e) = oxidizepw::run(config) {
-        eprintln!("Application error: {e}");
+        eprintln!("{e}");
         process::exit(1);
     }
 }

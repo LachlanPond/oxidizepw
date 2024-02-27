@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, usize};
 use thiserror::Error;
 
 pub enum Command {
@@ -47,7 +47,10 @@ impl Config {
                 "list" => Command::List,
                 "new" => Command::New { name: args.next(), user: args.next(), pass: args.next() },
                 "edit" => {
-                    let item = args.next().unwrap().parse::<usize>();
+                    let item = match args.next() {
+                        Some(n) => n.parse::<usize>(),
+                        None => return Err(ConfigError::CommandError("Invalid or no password ID given".to_string())),
+                    };
 
                     let mut edit_args: HashMap<&str, Option<String>> = HashMap::new();
 
@@ -81,12 +84,18 @@ impl Config {
                     }
                 },
                 "delete" => {
-                    let item = args.next().unwrap().parse::<usize>();
+                    let item = match args.next() {
+                        Some(n) => n.parse::<usize>(),
+                        None => return Err(ConfigError::CommandError("Invalid or no password ID given".to_string())),
+                    };
 
                     Command::Delete(item.ok())
                 },
                 "get" => {
-                    let item = args.next().unwrap().parse::<usize>();
+                    let item = match args.next() {
+                        Some(n) => n.parse::<usize>(),
+                        None => return Err(ConfigError::CommandError("Invalid or no password ID given".to_string())),
+                    };
 
                     Command::Get(item.ok())
                 },

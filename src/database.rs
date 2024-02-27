@@ -115,7 +115,7 @@ impl Database {
         match cmd {
             Command::Edit { item, name, user, pass } => {
                 if item.is_none() {
-                    return Err(DatabaseError::CommandError("No id was supplied for the password, so no password was edited".to_string()));
+                    return Err(DatabaseError::CommandError("Invalid password id given, so no password was edited".to_string()));
                 } else {
                     let password_id = item.unwrap();
                     if password_id >= self.passwords.len() {
@@ -140,7 +140,7 @@ impl Database {
         match cmd {
             Command::Delete(id) => {
                 if id.is_none() {
-                    return Err(DatabaseError::CommandError("No id was supplied for the password, so no password was deleted".to_string()));
+                    return Err(DatabaseError::CommandError("Invalid password id given, so no password was deleted".to_string()));
                 } else {
                     let password_id = id.unwrap();
                     if password_id >= self.passwords.len() {
@@ -160,7 +160,7 @@ impl Database {
         match cmd {
             Command::Get(id) => {
                 if id.is_none() {
-                    return Err(DatabaseError::CommandError("No id was supplied for the password, so no password was fetched".to_string()));
+                    return Err(DatabaseError::CommandError("Invalid password id given, so no password was fetched".to_string()));
                 } else {
                     let password_id = id.unwrap();
                     if password_id >= self.passwords.len() {
